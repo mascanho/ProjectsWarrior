@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ship Index</title>
+<meta name="description" content="Link-in-bio for an independent product engineer who builds web and mobile apps." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..48,600;12..48,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" />
+
+<style>
+  /* ============================================================
+     SHIP INDEX — link-in-bio for shipping web & mobile projects
+     Visual world: a release feed / deploy console. Monospace
+     tags, status pills, an app-icon mark, hard-edged cards.
+     ------------------------------------------------------------
+     TO MAKE IT YOURS: swap the name + bio in <header>, the
+     featured project, the six links in <nav class="feed">, and
+     the social chips. Every href="#" is a placeholder. Status
+     pills: class "is-live", "is-beta", or "is-version".
+     ============================================================ */
+
+  :root {
+    color-scheme: light dark;
+
+    --ground:      #F5F3EE;
+    --ground-line: #E4E0D6;
+    --panel:       #FFFFFF;
+    --panel-edge:  #E4DFD3;
+    --ink:         #14191B;
+    --muted:       #66716F;
+    --accent:      #CF5C36;   /* ember — CTA / active            */
+    --accent-soft: #F6E4DB;
+    --live:        #2C8570;   /* seafoam — "live" status         */
+    --live-soft:   #DEEDE8;
+    --ring:        rgba(207,92,54,.85);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0E1417;
+      --ground-line: #212D31;
+      --panel:       #161F22;
+      --panel-edge:  #27343A;
+      --ink:         #ECF0EE;
+      --muted:       #8A999C;
+      --accent:      #EC7A52;
+      --accent-soft: #2A2019;
+      --live:        #5FBBA8;
+      --live-soft:   #1C2A26;
+      --ring:        rgba(236,122,82,.9);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0E1417;
+    --ground-line: #212D31;
+    --panel:       #161F22;
+    --panel-edge:  #27343A;
+    --ink:         #ECF0EE;
+    --muted:       #8A999C;
+    --accent:      #EC7A52;
+    --accent-soft: #2A2019;
+    --live:        #5FBBA8;
+    --live-soft:   #1C2A26;
+    --ring:        rgba(236,122,82,.9);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(90% 40% at 50% -5%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%),
+      radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--ground-line) 70%, transparent) 1px, transparent 0) 0 0 / 22px 22px,
+      var(--ground);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .col {
+    max-width: 428px;
+    margin: 0 auto;
+    padding: 44px 22px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+  }
+
+  /* ---------- header ---------- */
+
+  .head { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+
+  .mark {
+    position: relative;
+    width: 66px;
+    height: 66px;
+    border-radius: 20px;
+    background: linear-gradient(150deg, var(--accent), color-mix(in srgb, var(--accent) 55%, #7a2f18));
+    display: grid;
+    place-items: center;
+    box-shadow: 0 6px 20px -8px var(--ring);
+  }
+  .mark::before {                      /* rotating focus ring */
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: 24px;
+    background: conic-gradient(from 0deg, transparent 0 62%, var(--ring) 78%, transparent 92%);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px));
+            mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px));
+    animation: rotate 5s linear infinite;
+  }
+  .mark svg { width: 34px; height: 34px; display: block; }
+
+  h1 {
+    margin: 0;
+    font-family: "Bricolage Grotesque", "IBM Plex Sans", sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.9rem, 8vw, 2.4rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: .74rem;
+    letter-spacing: .02em;
+    color: var(--muted);
+  }
+  .status .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--live);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--live) 25%, transparent);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+
+  .bio {
+    margin: 0;
+    color: var(--muted);
+    font-size: .98rem;
+    max-width: 40ch;
+  }
+  .bio strong { color: var(--ink); font-weight: 600; }
+
+  /* ---------- featured project ---------- */
+
+  .featured {
+    display: block;
+    text-decoration: none;
+    color: var(--ink);
+    background: var(--panel);
+    border: 1.5px solid var(--accent);
+    border-radius: 12px;
+    padding: 16px;
+    transition: transform .18s ease, box-shadow .18s ease;
+    box-shadow: 0 1px 0 var(--panel-edge);
+  }
+  .featured:hover,
+  .featured:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px -14px var(--ring);
+  }
+
+  .featured__kicker {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .64rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .featured__row { display: flex; align-items: flex-start; gap: 14px; margin-top: 8px; }
+
+  .shot {
+    flex: none;
+    width: 92px;
+    border: 1px solid var(--panel-edge);
+    border-radius: 7px;
+    padding: 7px;
+    background: color-mix(in srgb, var(--ink) 4%, var(--panel));
+  }
+  .shot .bar { height: 5px; border-radius: 3px; background: var(--panel-edge); margin-top: 6px; }
+  .shot .bar:first-child { margin-top: 0; width: 60%; background: var(--accent); }
+  .shot .bar:nth-child(3) { width: 80%; }
+  .shot .bar:nth-child(4) { width: 45%; }
+
+  .featured__title {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 600;
+    font-size: 1.14rem;
+    line-height: 1.2;
+  }
+  .featured__desc { margin: 4px 0 0; font-size: .88rem; color: var(--muted); }
+
+  /* ---------- the feed ---------- */
+
+  .feed { display: flex; flex-direction: column; gap: 9px; }
+  .feed__label {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .64rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+
+  .item {
+    --i: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    text-decoration: none;
+    color: var(--ink);
+    background: var(--panel);
+    border: 1px solid var(--panel-edge);
+    border-radius: 10px;
+    transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+    animation: rise .45s ease backwards;
+    animation-delay: calc(var(--i) * 55ms);
+  }
+  .item:hover,
+  .item:focus-visible {
+    transform: translateX(4px);
+    border-color: var(--accent);
+    box-shadow: -3px 0 0 var(--accent);
+  }
+
+  .tag {
+    flex: none;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .66rem;
+    font-weight: 500;
+    letter-spacing: .04em;
+    color: var(--muted);
+    background: color-mix(in srgb, var(--ink) 5%, var(--panel));
+    border: 1px solid var(--panel-edge);
+    border-radius: 5px;
+    padding: 3px 6px;
+    min-width: 46px;
+    text-align: center;
+  }
+
+  .item__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+  .item__title { font-weight: 600; font-size: .98rem; line-height: 1.25; }
+  .item__meta {
+    font-size: .77rem;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .pill {
+    flex: none;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .6rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 3px 7px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+  }
+  .pill.is-live    { color: var(--live);   background: var(--live-soft);   border-color: color-mix(in srgb, var(--live) 40%, transparent); }
+  .pill.is-beta    { color: var(--accent); background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+  .pill.is-version { color: var(--muted);  background: color-mix(in srgb, var(--ink) 6%, var(--panel)); border-color: var(--panel-edge); }
+
+  /* ---------- socials ---------- */
+
+  .socials { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 2px; }
+  .chip {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .68rem;
+    letter-spacing: .04em;
+    text-decoration: none;
+    color: var(--ink);
+    padding: 6px 10px;
+    border: 1px solid var(--panel-edge);
+    border-radius: 6px;
+    background: var(--panel);
+    transition: border-color .14s ease, color .14s ease, transform .14s ease;
+  }
+  .chip:hover,
+  .chip:focus-visible { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+  footer {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .64rem;
+    letter-spacing: .06em;
+    color: var(--muted);
+  }
+
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  @keyframes rotate { to { transform: rotate(360deg); } }
+  @keyframes pulse  { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+  @keyframes rise   { from { opacity: 0; transform: translateY(8px); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: .001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .001ms !important;
+    }
+  }
+
+  body { margin: 0; }
+</style>
+</head>
+<body>
+
+<main class="col">
+
+  <!-- ============ HEADER ============ -->
+  <header class="head">
+    <div class="mark" aria-hidden="true">
+      <svg viewBox="0 0 32 32" fill="none">
+        <path d="M4 20c3.2 0 3.2-4 6.4-4s3.2 4 6.4 4 3.2-4 6.4-4 3.2 4 4.8 4" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M4 12c3.2 0 3.2-4 6.4-4s3.2 4 6.4 4 3.2-4 6.4-4 3.2 4 4.8 4" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity="0.55"/>
+      </svg>
+    </div>
+    <h1>Devin Osei</h1>
+    <span class="status"><span class="dot"></span>Available for projects &middot; Q4 2026</span>
+    <p class="bio">
+      Independent product engineer. I design and ship <strong>web apps</strong>,
+      <strong>iOS apps</strong>, and the occasional marketing site. Currently
+      building Tidepool.
+    </p>
+  </header>
+
+  <!-- ============ FEATURED PROJECT ============ -->
+  <a class="featured" href="#">
+    <span class="featured__kicker">Currently shipping</span>
+    <span class="featured__row">
+      <span class="shot" aria-hidden="true">
+        <span class="bar"></span><span class="bar"></span>
+        <span class="bar"></span><span class="bar"></span>
+      </span>
+      <span>
+        <span class="featured__title">Tidepool</span>
+        <span class="featured__desc">A calm task manager for people who over-plan. Public beta on Web &amp; iOS.</span>
+      </span>
+    </span>
+  </a>
+
+  <!-- ============ THE FEED ============ -->
+  <nav class="feed" aria-label="Links">
+    <span class="feed__label">// links</span>
+
+    <a class="item" style="--i:0" href="#">
+      <span class="tag">WEB</span>
+      <span class="item__text">
+        <span class="item__title">Try Tidepool on the web</span>
+        <span class="item__meta">tidepool.app &mdash; free during beta</span>
+      </span>
+      <span class="pill is-beta">Beta</span>
+    </a>
+
+    <a class="item" style="--i:1" href="#">
+      <span class="tag">iOS</span>
+      <span class="item__text">
+        <span class="item__title">Tidepool for iPhone</span>
+        <span class="item__meta">TestFlight &mdash; public build</span>
+      </span>
+      <span class="pill is-beta">Beta</span>
+    </a>
+
+    <a class="item" style="--i:2" href="#">
+      <span class="tag">WORK</span>
+      <span class="item__text">
+        <span class="item__title">Selected projects</span>
+        <span class="item__meta">Case studies: web, mobile, design systems</span>
+      </span>
+      <span class="pill is-live">Live</span>
+    </a>
+
+    <a class="item" style="--i:3" href="#">
+      <span class="tag">CODE</span>
+      <span class="item__text">
+        <span class="item__title">GitHub</span>
+        <span class="item__meta">Open-source tools &amp; experiments</span>
+      </span>
+      <span class="pill is-live">Live</span>
+    </a>
+
+    <a class="item" style="--i:4" href="#">
+      <span class="tag">LOG</span>
+      <span class="item__text">
+        <span class="item__title">Changelog</span>
+        <span class="item__meta">What shipped this week</span>
+      </span>
+      <span class="pill is-version">v3.2</span>
+    </a>
+
+    <a class="item" style="--i:5" href="#">
+      <span class="tag">HIRE</span>
+      <span class="item__text">
+        <span class="item__title">Work with me</span>
+        <span class="item__meta">Availability, rates, how I scope projects</span>
+      </span>
+      <span class="pill is-live">Open</span>
+    </a>
+  </nav>
+
+  <!-- ============ SOCIALS ============ -->
+  <div class="socials">
+    <a class="chip" href="#">GitHub</a>
+    <a class="chip" href="#">X</a>
+    <a class="chip" href="#">Mastodon</a>
+    <a class="chip" href="#">LinkedIn</a>
+    <a class="chip" href="#">Email</a>
+    <a class="chip" href="#">RSS</a>
+  </div>
+
+  <footer>built in a weekend &middot; last deploy Aug 2026</footer>
+
+</main>
+</body>
+</html>
